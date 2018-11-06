@@ -84,13 +84,14 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>.\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,9 +152,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClCompile Include="cm\cm_colorspace_convert.cpp" />
+    <ClCompile Include="cm\cm_socket.cpp" />
+    <ClCompile Include="cm\cm_string_coding.cpp" />
+    <ClCompile Include="cm\cm_thread.cpp" />
+    <ClCompile Include="cm\cm_thread_critical_region.cpp" />
+    <ClCompile Include="cm\cm_time.cpp" />
+    <ClCompile Include="cm\cm_win32thread.cpp" />
+    <ClCompile Include="MseServer.cpp" />
+    <ClCompile Include="Network\EPOLL\EPollModel.cpp" />
+    <ClCompile Include="Network\EPOLL\EPollPerSocketContext.cpp" />
+    <ClCompile Include="Network\IOCP\IOCPModel.cpp" />
+    <ClCompile Include="Network\IOCP\PerSocketContext.cpp" />
+    <ClCompile Include="Network\ServerModelInterface.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -161,6 +172,26 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TestMseServer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cm\cm_colorspace_convert.h" />
+    <ClInclude Include="cm\cm_socket.h" />
+    <ClInclude Include="cm\cm_string_coding.h" />
+    <ClInclude Include="cm\cm_thread.h" />
+    <ClInclude Include="cm\cm_thread_critical_region.h" />
+    <ClInclude Include="cm\cm_time.h" />
+    <ClInclude Include="cm\cm_type.h" />
+    <ClInclude Include="cm\cm_win32thread.h" />
+    <ClInclude Include="MseServer.h" />
+    <ClInclude Include="Network\EPOLL\EPollModel.h" />
+    <ClInclude Include="Network\EPOLL\EPollPerSocketContext.h" />
+    <ClInclude Include="Network\IOCP\IOCPModel.h" />
+    <ClInclude Include="Network\IOCP\PerSocketContext.h" />
+    <ClInclude Include="Network\ServerModelInterface.h" />
+    <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cm\cm_object_pool" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

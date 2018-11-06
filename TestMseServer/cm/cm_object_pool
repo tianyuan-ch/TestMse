@@ -1,0 +1,111 @@
+#pragma once
+
+#include "cm_type.h"
+#include "cm_time.h"
+#include "cm_thread_critical_region.h"
+
+#include <assert.h>
+#include <queue>
+#include <vector>
+
+namespace cm{
+
+class CObjectItem
+{
+public:
+	CObjectItem() { sec_delay_reuse_ = 0; };
+	~CObjectItem();
+
+	int  sec_delay_reuse_;		//延迟秒后可重新使用
+	void *item_;
+};
+
+template <class T>
+class CObjectPool
+{
+public:
+	CObjectPool() { lock_ = CreateLock(); };
+	~CObjectPool(){ delete lock_; };
+
+	//初始化,申请对象个数
+	int Init(uint32_t num_objects);
+
+	//用户获取对象
+	T* AcquireObject(int &num);
+	//用户释放对象
+	int ReleaseObject(T* obj);
+
+private:
+	//用户可获取的对象
+	std::queue<CObjectItem *> queue_accessible_objects_;
+	//用户正在使用的对象
+	std::queue<CObjectItem *> queue_using_objects_;
+	//所用对象
+	std::vector<T *> vector_totol_objects_;
+
+	CBaseLock* lock_;
+	//对象总数量
+	uint32_t num_objects_;
+};
+
+template <class T>
+int CObjectPool<T>::Init(uint32_t num_objects)
+{
+	CObjectItem *object_item;
+	for(uint32_t i = 0; i < num_objects; i++)
+	{
+		object_item = new CObjectItem;
+		T* t_object_item = new T;
+		object_item->item_ = t_object_item;
+		queue_accessible_objects_.push(object_item);
+		vector_totol_objects_.push_back(t_object_item);
+	}
+	num_objects_ = num_objects;
+	return 0;
+}
+
+template <class T>
+T* CObjectPool<T>::AcquireObject(int &num)
+{
+	CAutoLock autoLock(lock_);
+
+	uint32_t time = cm_gettickcount();
+
+	if(queue_accessible_objects_.size() == 0)
+	{
+		num = -1;	
+		return NULL;
+	}
+
+	CObjectItem* object_item = queue_accessible_objects_.front();
+
+	if(time - object_item->sec_delay_reuse_ < 4000 && time - object_item->sec_delay_reuse_ > 0)
+	{
+		num = -2;
+		return NULL;
+	}
+
+	queue_accessible_objects_.pop();
+	queue_using_objects_.push(object_item);
+	num = queue_using_objects_.size();
+	return (T*)object_item->item_;
+}
+
+template <class T>
+int CObjectPool<T>::ReleaseObject(T* obj)
+{
+	assert(queue_using_objects_.size() > 0);
+	CAutoLock autoLock(lock_);
+
+	uint32_t time = cm_gettickcount();
+	CObjectItem* object_item = queue_using_objects_.front();
+	object_item->sec_delay_reuse_ = time;
+	object_item->item_ = obj;
+	queue_using_objects_.pop();
+	queue_accessible_objects_.push(object_item);
+
+	return queue_using_objects_.size();
+}
+
+
+}
