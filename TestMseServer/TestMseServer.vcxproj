@@ -165,13 +165,10 @@
     <ClCompile Include="Network\IOCP\IOCPModel.cpp" />
     <ClCompile Include="Network\IOCP\PerSocketContext.cpp" />
     <ClCompile Include="Network\ServerModelInterface.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="TestMseServer.cpp" />
+    <ClCompile Include="utility\Base64.cpp" />
+    <ClCompile Include="utility\SHA1.cpp" />
+    <ClCompile Include="WebSocket\WebSocketProtocol.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cm\cm_colorspace_convert.h" />
@@ -188,7 +185,9 @@
     <ClInclude Include="Network\IOCP\IOCPModel.h" />
     <ClInclude Include="Network\IOCP\PerSocketContext.h" />
     <ClInclude Include="Network\ServerModelInterface.h" />
-    <ClInclude Include="pch.h" />
+    <ClInclude Include="utility\Base64.h" />
+    <ClInclude Include="utility\SHA1.h" />
+    <ClInclude Include="WebSocket\WebSocketProtocol.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cm\cm_object_pool" />

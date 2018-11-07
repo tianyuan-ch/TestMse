@@ -76,8 +76,6 @@ private:
 
 	// 获得本机的处理器数量
 	int _GetNoOfProcessors();
-	// 打印消息
-	void _ShowMessage( const std::string szFormat,...) const;
 
 private:
 	HANDLE                      m_hShutdownEvent;              // 用来通知线程系统退出的事件，为了能够更好的退出线程

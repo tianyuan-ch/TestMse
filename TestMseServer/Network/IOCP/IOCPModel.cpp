@@ -55,27 +55,27 @@ int CIOCPModel::Start(const char* server_address, uint16_t server_port, int num_
 	// 初始化IOCP
 	if (false == _InitializeIOCP())
 	{
-		this->_ShowMessage("初始化IOCP失败！\n");
+		printf("初始化IOCP失败！\n");
 		return -1;
 	}
 	else
 	{
-		this->_ShowMessage("IOCP初始化完毕.\n");
+		printf("IOCP初始化完毕.\n");
 	}
 
 	// 初始化Socket
 	if( false==_InitializeListenSocket(server_address) )
 	{
-		this->_ShowMessage("Listen Socket初始化失败！\n");
+		printf("Listen Socket初始化失败！\n");
 		this->_DeInitialize();
 		return -1;
 	}
 	else
 	{
-		this->_ShowMessage("IP:%s Port:%d Listen Socket初始化完毕.", m_strIP.c_str(), m_nPort);
+		printf("IP:%s Port:%d Listen Socket初始化完毕.", m_strIP.c_str(), m_nPort);
 	}
 
-	this->_ShowMessage("系统准备就绪，等候连接....\n");
+	printf("系统准备就绪，等候连接....\n");
 
 	return 0;
 }
@@ -93,7 +93,7 @@ void CIOCPModel::Stop()
 		WaitForMultipleObjects(m_nThreads, m_phWorkerThreads, TRUE, INFINITE);
 		// 释放其他资源
 		this->_DeInitialize();
-		this->_ShowMessage("停止监听\n");
+		printf("停止监听\n");
 	}	
 }
 
@@ -130,7 +130,7 @@ DWORD WINAPI CIOCPModel::_WorkerThread(LPVOID lpParam)
 	CIOCPModel* pIOCPModel = (CIOCPModel*)pParam->pIOCPModel;
 	int nThreadNo = (int)pParam->nThreadNo;
 
-	pIOCPModel->_ShowMessage("工作者线程启动，ID: %d.\r\n",nThreadNo);
+	printf("工作者线程启动，ID: %d.\r\n",nThreadNo);
 
 	OVERLAPPED           *pOverlapped = NULL;
 	CPerSocketContext    *pSocketContext = NULL;
@@ -227,7 +227,7 @@ bool CIOCPModel::LoadSocketLib()
 	// 错误(一般都不可能出现)
 	if (NO_ERROR != nResult)
 	{
-		this->_ShowMessage("初始化WinSock 2.2失败！\n");
+		printf("初始化WinSock 2.2失败！\n");
 		return false; 
 	}
 
@@ -240,7 +240,7 @@ bool CIOCPModel::_InitializeIOCP()
 
 	if ( NULL == m_hIOCompletionPort)
 	{
-		this->_ShowMessage("建立完成端口失败！错误代码: %d!\n", WSAGetLastError());
+		printf("建立完成端口失败！错误代码: %d!\n", WSAGetLastError());
 		return false;
 	}
 
@@ -278,7 +278,7 @@ bool CIOCPModel::_InitializeListenSocket(const char* pServerAddress)
 	SOCKET socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 	if (INVALID_SOCKET == socket) 
 	{
-		this->_ShowMessage("初始化Socket失败，错误代码: %d.\n", WSAGetLastError());
+		printf("初始化Socket失败，错误代码: %d.\n", WSAGetLastError());
 		return false;
 	}
 	else
@@ -301,7 +301,7 @@ bool CIOCPModel::_InitializeListenSocket(const char* pServerAddress)
 	// 将Listen Socket绑定至完成端口中
 	if( NULL== CreateIoCompletionPort((HANDLE)socket, m_hIOCompletionPort,(DWORD)m_pListenContext, 0))  
 	{  
-		this->_ShowMessage("绑定 Listen Socket至完成端口失败！错误代码: %d/n", WSAGetLastError());
+		printf("绑定 Listen Socket至完成端口失败！错误代码: %d/n", WSAGetLastError());
 		RELEASE(m_pListenContext);
 		return false;
 	}
@@ -313,7 +313,7 @@ bool CIOCPModel::_InitializeListenSocket(const char* pServerAddress)
 	if (SOCKET_ERROR == bind(socket, (struct sockaddr *) &ServerAddress, sizeof(ServerAddress))) 
 	{
 		int lastError = GetLastError();
-		this->_ShowMessage("bind()函数执行错误.\n");
+		printf("bind()函数执行错误.\n");
 		RELEASE(m_pListenContext);
 		return false;
 	}
@@ -324,7 +324,7 @@ bool CIOCPModel::_InitializeListenSocket(const char* pServerAddress)
 
 	if (SOCKET_ERROR == listen(socket,SOMAXCONN))
 	{
-		this->_ShowMessage("Listen()函数执行出现错误.\n");
+		printf("Listen()函数执行出现错误.\n");
 		RELEASE(m_pListenContext);
 		return false;
 	}
@@ -346,7 +346,7 @@ bool CIOCPModel::_InitializeListenSocket(const char* pServerAddress)
 		NULL, 
 		NULL))  
 	{  
-		this->_ShowMessage("WSAIoctl 未能获取AcceptEx函数指针。错误代码: %d\n", WSAGetLastError()); 
+		printf("WSAIoctl 未能获取AcceptEx函数指针。错误代码: %d\n", WSAGetLastError()); 
 		this->_DeInitialize();
 		return false;  
 	}  
@@ -363,7 +363,7 @@ bool CIOCPModel::_InitializeListenSocket(const char* pServerAddress)
 		NULL, 
 		NULL))  
 	{  
-		this->_ShowMessage("WSAIoctl 未能获取GuidGetAcceptExSockAddrs函数指针。错误代码: %d\n", WSAGetLastError());  
+		printf("WSAIoctl 未能获取GuidGetAcceptExSockAddrs函数指针。错误代码: %d\n", WSAGetLastError());  
 		this->_DeInitialize();
 		return false; 
 	}  
@@ -382,7 +382,7 @@ bool CIOCPModel::_InitializeListenSocket(const char* pServerAddress)
 		}
 	}
 
-	this->_ShowMessage("投递%d个AcceptEx请求完毕\r\n", MAX_POST_ACCEPT);
+	printf("投递%d个AcceptEx请求完毕\r\n", MAX_POST_ACCEPT);
 
 	return true;
 }
@@ -406,7 +406,7 @@ void CIOCPModel::_DeInitialize()
 	// 关闭监听Socket
 	RELEASE(m_pListenContext);
 
-	this->_ShowMessage("释放资源完毕.\n");
+	printf("释放资源完毕.\n");
 }
 bool CIOCPModel::_AssociateWithIOCP( CPerSocketContext *pContext )
 {
@@ -415,7 +415,7 @@ bool CIOCPModel::_AssociateWithIOCP( CPerSocketContext *pContext )
 
 	if (NULL == hTemp)
 	{
-		this->_ShowMessage(("执行CreateIoCompletionPort()出现错误.错误代码：%d"),GetLastError());
+		printf(("执行CreateIoCompletionPort()出现错误.错误代码：%d"),GetLastError());
 		return false;
 	}
 
@@ -436,7 +436,7 @@ bool CIOCPModel::_PostAccept( PER_IO_CONTEXT* pAcceptIoContext )
 	pAcceptIoContext->m_sockAccept  = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);  
 	if(INVALID_SOCKET == pAcceptIoContext->m_sockAccept )  
 	{  
-		_ShowMessage("创建用于Accept的Socket失败！错误代码: %d", WSAGetLastError()); 
+		printf("创建用于Accept的Socket失败！错误代码: %d", WSAGetLastError()); 
 		return false;  
 	} 
 
@@ -448,7 +448,7 @@ bool CIOCPModel::_PostAccept( PER_IO_CONTEXT* pAcceptIoContext )
 	{  
 		if(WSA_IO_PENDING != WSAGetLastError())  
 		{  
-			_ShowMessage("投递 AcceptEx 请求失败，错误代码: %d", WSAGetLastError());  
+			printf("投递 AcceptEx 请求失败，错误代码: %d", WSAGetLastError());
 			return false;  
 		}  
 	} 
@@ -473,7 +473,7 @@ bool CIOCPModel::_DoAccpet(CPerSocketContext* pSocketContext, PER_IO_CONTEXT* pI
 	nRet = m_pIOCPUser->CBAccept(&pNewSocketContext);
 	if(nRet < 0)
 	{
-		this->_ShowMessage("CBAccept return nRet %d.\r\n", nRet);
+		printf("CBAccept return nRet %d.\r\n", nRet);
 		RELEASE_SOCKET(pIoContext->m_sockAccept);
 	}
 	else
@@ -507,7 +507,7 @@ bool CIOCPModel::_DoAccpet(CPerSocketContext* pSocketContext, PER_IO_CONTEXT* pI
 				{
 					char dst[16];
 					inet_ntop(AF_INET, (void*)&ClientAddr->sin_addr, dst, 16);
-					this->_ShowMessage("客户端 %s:%d 连入.客户端数%d\r\n", dst, ntohs(ClientAddr->sin_port), nNum);
+					printf("客户端 %s:%d 连入.客户端数%d\r\n", dst, ntohs(ClientAddr->sin_port), nNum);
 				}
 			}
 		}
@@ -529,7 +529,7 @@ bool CIOCPModel::_PostRecv(PER_IO_CONTEXT* pIoContext)
 	// 如果返回值错误，并且错误的代码并非是Pending的话，那就说明这个重叠请求失败了
 	if ((SOCKET_ERROR == nBytesRecv) && (WSA_IO_PENDING != WSAGetLastError()))
 	{
-		this->_ShowMessage("投递第一个WSARecv失败！");
+		printf("投递第一个WSARecv失败！");
 		return false;
 	}
 	return true;
@@ -569,7 +569,7 @@ bool CIOCPModel::_PostSend(PER_IO_CONTEXT* pIoContext, DWORD dwSend)
 	if ((SOCKET_ERROR == nBytesSend) && (WSA_IO_PENDING != WSAGetLastError()))
 	{
 		int nRet = WSAGetLastError();
-		this->_ShowMessage("投递第一个WSASend失败！");
+		printf("投递第一个WSASend失败！");
 		return false;
 	}
 
@@ -600,12 +600,12 @@ bool CIOCPModel::HandleError( CPerSocketContext *pContext,const DWORD& dwErr )
 		// 确认客户端是否还活着...
 		if( !_IsSocketAlive( pContext->GetSocket()) )
 		{
-			this->_ShowMessage("检测到客户端异常退出！");
+			printf("检测到客户端异常退出！");
 			return true;
 		}
 		else
 		{
-			this->_ShowMessage("网络操作超时！重试中...");
+			printf("网络操作超时！重试中...");
 			return true;
 		}
 	}  
@@ -613,13 +613,13 @@ bool CIOCPModel::HandleError( CPerSocketContext *pContext,const DWORD& dwErr )
 	// 可能是客户端异常退出了
 	else if( ERROR_NETNAME_DELETED==dwErr )
 	{
-		this->_ShowMessage("检测到客户端异常退出！");
+		printf("检测到客户端异常退出！");
 		return true;
 	}
 
 	else
 	{
-		this->_ShowMessage("完成端口操作出现错误，线程退出。错误代码：%d",dwErr );
+		printf("完成端口操作出现错误，线程退出。错误代码：%d",dwErr );
 		return false;
 	}
 }
@@ -632,26 +632,6 @@ int CIOCPModel::_GetNoOfProcessors()
 
 	return si.dwNumberOfProcessors;
 }
-void CIOCPModel::_ShowMessage(const std::string szFormat,...) const
-{
-	// 根据传入的参数格式化字符串
-	std::string strMessage;
-	va_list arglist;
-
-	va_start(arglist, szFormat);
-
-	int num_of_chars = _vscprintf(szFormat.c_str(), arglist);  
-	if (num_of_chars > strMessage.capacity()){  
-		strMessage.resize(num_of_chars + 1);  
-	}
-
-	vsprintf_s((char *)strMessage.c_str(), sizeof(strMessage.c_str()), szFormat.c_str(), arglist);
-	//vsprintf((char *) strMessage.c_str(), szFormat.c_str(), arglist);
-
-	printf(strMessage.c_str());
-
-	va_end(arglist);
-}
 
 int CIOCPModel::SetIdleIoContext(CPerSocketContext* pSocketContext, _PER_IO_CONTEXT* pContext)
 {
@@ -660,11 +640,11 @@ int CIOCPModel::SetIdleIoContext(CPerSocketContext* pSocketContext, _PER_IO_CONT
 	{
 		char dst[16];
 		inet_ntop(AF_INET, (void*)&pSocketContext->m_ClientAddr.sin_addr, dst, 16);
-		this->_ShowMessage("客户端 %s:%d 断开.", dst, ntohs(pSocketContext->m_ClientAddr.sin_port));
+		printf("客户端 %s:%d 断开.", dst, ntohs(pSocketContext->m_ClientAddr.sin_port));
 		pSocketContext->CloseSocket();
 		//应用计数为0时，调用
 		int nRet = m_pIOCPUser->CBDisconnect(pSocketContext);
-		this->_ShowMessage("剩余连接%d\r\n", nRet);
+		printf("剩余连接%d\r\n", nRet);
 	}
 	return nCount;
 }

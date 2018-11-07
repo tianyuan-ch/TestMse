@@ -52,7 +52,7 @@ class CPerSocketContext
 {
 public:
 	CPerSocketContext();
-	~CPerSocketContext();
+	virtual ~CPerSocketContext();
 	//¸³Öµm_Socket m_ClientAddr
 	void InitSocket(SOCKET socket, SOCKADDR_IN* clientAddr);
 

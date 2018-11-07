@@ -21,11 +21,14 @@
     <Filter Include="源文件\cm">
       <UniqueIdentifier>{079dc2b3-e3e2-4154-a06f-742ca9997b78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\WebSocket">
+      <UniqueIdentifier>{84ee8ac3-7b6c-4832-a451-292e2aef8c4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\utility">
+      <UniqueIdentifier>{a99a6e5f-d099-4850-b184-9189a397281f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="TestMseServer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -68,11 +71,17 @@
     <ClCompile Include="MseServer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="WebSocket\WebSocketProtocol.cpp">
+      <Filter>源文件\WebSocket</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\SHA1.cpp">
+      <Filter>源文件\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\Base64.cpp">
+      <Filter>源文件\utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
     <ClInclude Include="Network\EPOLL\EPollModel.h">
       <Filter>源文件\Network\EPOLL</Filter>
     </ClInclude>
@@ -114,6 +123,15 @@
     </ClInclude>
     <ClInclude Include="MseServer.h">
       <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WebSocket\WebSocketProtocol.h">
+      <Filter>源文件\WebSocket</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\SHA1.h">
+      <Filter>源文件\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\Base64.h">
+      <Filter>源文件\utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
