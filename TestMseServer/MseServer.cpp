@@ -66,7 +66,7 @@ int MseServer::CBRecv(CPerSocketContext *pContext, char *pBuffer, uint32_t uByte
 
 	int nPos = 0;
 
-
+	//接收0 1 2 3  发送5 6 7 8
 	while (nPos < uBytesTransfered)
 	{
 		int nOutLen, nPackageLen;
@@ -79,7 +79,19 @@ int MseServer::CBRecv(CPerSocketContext *pContext, char *pBuffer, uint32_t uByte
 
 		if (pData[0] == 0 && pData[1] == 1 && pData[2] == 2 && pData[3] == 3)
 		{
-			//发送fmp4
+			char szSend[14];
+			szSend[10] = 5;
+			szSend[11] = 6;
+			szSend[12] = 7;
+			szSend[13] = 8;
+
+			char *pSendData = CWebSocketProtocol::EncodeFrame(szSend + 10, 4, nOutLen);
+
+			m_pServerModel->Send(pContext, pSendData, nOutLen);
+		}
+		else
+		{
+			return -1;
 		}
 	}
 
