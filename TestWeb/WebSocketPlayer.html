@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>WebSocket</title>
+</head>
+<body>
+    <h1>播放测试</h1>
+    <button onclick="Connect()">开始测试WebSocket</button>
+    <script>
+        var socket;
+        function Connect() {
+            socket = new WebSocket('ws://127.0.0.1:18004');
+            socket.binaryType = 'arraybuffer';
+            socket.onopen = function () {
+                console.log("已连接");
+                var tmp = new Uint8Array(4)
+                tmp[0] = 0;
+                tmp[1] = 1;
+                tmp[2] = 2;
+                tmp[3] = 3;
+                socket.send(tmp);
+            }
+            socket.onmessage = function (msg) {
+                var ptr = new Uint8Array(msg.data);
+                console.log("接收数据:" + ptr[0] + ptr[1] + ptr[2] + ptr[3]);
+            };
+            socket.onclose = function (msg) {
+                console.log("连接关闭 " + msg.code);
+            };
+            socket.onerror = function () {
+                console.error("websocket发生错误");
+            };
+        }
+    </script>
+</body >
+</html >
