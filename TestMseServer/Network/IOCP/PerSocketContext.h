@@ -29,8 +29,26 @@ typedef struct _PER_IO_CONTEXT
 	SOCKET         m_sockAccept;                               // 这个网络操作所使用的Socket
 	WSABUF         m_wsaBuf;                                   // WSA类型的缓冲区，用于给重叠操作传参数的
 	char           m_szBuffer[MAX_BUFFER_LEN];                 // 这个是WSABUF里具体存字符的缓冲区
-	uint32_t       m_uTransmitBytes;
+	uint32_t       m_uRecvOffsetBytes;
 	volatile char  m_OpType;								   // 标识网络操作的类型(对应上面的枚举) (原子操作)
+
+	int ResetWSABuf(int nAllLength, int nUseLength)
+	{
+		if (nUseLength > nAllLength)
+			return -1;
+
+		if (nUseLength > MAX_BUFFER_LEN || nAllLength > MAX_BUFFER_LEN)
+			return -1;
+
+		int nLen = nAllLength - nUseLength;
+
+		if (nLen != 0)
+			memcpy(m_szBuffer, m_szBuffer + nUseLength, nLen);
+
+		m_uRecvOffsetBytes = nLen;
+		m_wsaBuf.buf = m_szBuffer + nLen;
+		m_wsaBuf.len = MAX_BUFFER_LEN - nLen;
+	}
 
 	_PER_IO_CONTEXT()
 	{
@@ -40,6 +58,7 @@ typedef struct _PER_IO_CONTEXT
 		m_wsaBuf.buf = m_szBuffer;
 		m_wsaBuf.len = MAX_BUFFER_LEN;
 		m_OpType     = NULL_POSTED;
+		m_uRecvOffsetBytes = 0;
 	}
 	~_PER_IO_CONTEXT()
 	{

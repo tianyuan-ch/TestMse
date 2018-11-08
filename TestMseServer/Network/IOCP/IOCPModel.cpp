@@ -498,6 +498,16 @@ bool CIOCPModel::_DoAccpet(CPerSocketContext* pSocketContext, PER_IO_CONTEXT* pI
 			{
 				PER_IO_CONTEXT* pNewIoContext = pNewSocketContext->GetIdleIoContext(RECV_POSTED);
 				pNewIoContext->m_sockAccept   = pNewSocketContext->GetSocket();
+
+				if (nRet != dwBytesTransfered)
+				{
+					int nLen = dwBytesTransfered - nRet;
+					memcpy(pNewIoContext->m_szBuffer, pIoContext->m_wsaBuf.buf + nRet, nLen);
+					pNewIoContext->m_uRecvOffsetBytes = nLen;
+					pNewIoContext->m_wsaBuf.buf = pNewIoContext->m_szBuffer + nLen;
+					pNewIoContext->m_wsaBuf.len = MAX_BUFFER_LEN - nLen;
+				}
+
 				if(false == this->_PostRecv(pNewIoContext))
 				{
 					pNewSocketContext->CloseSocket();
@@ -540,13 +550,16 @@ bool CIOCPModel::_DoRecv(CPerSocketContext* pSocketContext, PER_IO_CONTEXT* pIoC
 
 	WSABUF *p_wbuf = &pIoContext->m_wsaBuf;
 
-	nRet = m_pIOCPUser->CBRecv(pSocketContext, p_wbuf->buf, dwBytesTransfered);
+	nRet = m_pIOCPUser->CBRecv(pSocketContext, pIoContext->m_szBuffer, dwBytesTransfered + pIoContext->m_uRecvOffsetBytes);
 	if(nRet < 0)
 	{
 		pSocketContext->CloseSocket();
 		SetIdleIoContext(pSocketContext, pIoContext);
 		return false;
 	}
+
+	pIoContext->ResetWSABuf(dwBytesTransfered, nRet);
+
 	if(!_PostRecv(pIoContext))
 	{
 		pSocketContext->CloseSocket();

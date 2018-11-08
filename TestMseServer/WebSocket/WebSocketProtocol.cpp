@@ -114,6 +114,9 @@ int CWebSocketProtocol::Handshake(char *pBuffer, uint32_t uLen, std::string *str
 }
 char* CWebSocketProtocol::DecodeFrame(char* pBuffer, unsigned int uLen, int &outLen, int &wsPackageLength)
 {
+	if (uLen < 2)
+		return NULL;
+
 	WebSocketHeader wsHeader;
 	unsigned char* inp = (unsigned char*)(pBuffer);
 
@@ -135,11 +138,17 @@ char* CWebSocketProtocol::DecodeFrame(char* pBuffer, unsigned int uLen, int &out
 	}
 	else if(length_field == 126)  //msglen is 16bit!
 	{ 
+		if (uLen < 4)
+			return NULL;
+
 		payload_length = (inp[2] << 8) + inp[3];
 		pos += 2;
 	}
 	else if(length_field == 127)  //msglen is 64bit!
 	{
+		if (uLen < 10)
+			return NULL;
+
 		payload_length = ((unsigned long long)inp[2] << 56) + ((unsigned long long)inp[3] << 48) + 
 			((unsigned long long)inp[4] << 40) + ((unsigned long long)inp[5] << 32) +
 			((unsigned long long)inp[6] << 24) + ((unsigned long long)inp[7] << 16) +
@@ -147,13 +156,10 @@ char* CWebSocketProtocol::DecodeFrame(char* pBuffer, unsigned int uLen, int &out
 		pos += 8;
 	}
 
-	if((int)uLen < (payload_length + pos))
+	if((int)uLen < (payload_length + pos + wsHeader.mask ? 4 : 0))
 	{
-		return 0; //不是完整的包
+		return NULL; //不是完整的包
 	}
-
-	outLen = payload_length;
-	wsPackageLength = payload_length + pos;
 
 	if(wsHeader.mask)
 	{
@@ -161,11 +167,14 @@ char* CWebSocketProtocol::DecodeFrame(char* pBuffer, unsigned int uLen, int &out
 		pos += 4;
 
 		// unmask data:
-		for(int i = pos; i < payload_length + pos; i++)
+		for(int i = pos, j = 0; i < payload_length + pos; i++,j++)
 		{
-			inp[i] = inp[i] ^ ((unsigned char*)(&mask))[i%4];
+			inp[i] = inp[i] ^ ((unsigned char*)(&mask))[j%4];
 		}
 	}
+
+	outLen = payload_length;
+	wsPackageLength = payload_length + pos;
 
 	return pBuffer + pos;
 }

@@ -61,11 +61,29 @@ int MseServer::CBRecv(CPerSocketContext *pContext, char *pBuffer, uint32_t uByte
 
 		pWebSocketItem->HandshakeComplete();
 
-		return 0;
+		return uBytesTransfered;
 	}
 
+	int nPos = 0;
 
-	return nRet;
+
+	while (nPos < uBytesTransfered)
+	{
+		int nOutLen, nPackageLen;
+		char *pData = CWebSocketProtocol::DecodeFrame(pBuffer + nPos, uBytesTransfered - nPos, nOutLen, nPackageLen);
+		if (pData == NULL)
+		{
+			break;
+		}
+		nPos += nPackageLen;
+
+		if (pData[0] == 0 && pData[1] == 1 && pData[2] == 2 && pData[3] == 3)
+		{
+			//·¢ËÍfmp4
+		}
+	}
+
+	return nPos;
 }
 int MseServer::CBSend(CPerSocketContext *pContext, uint32_t uBytesTransfered)
 {

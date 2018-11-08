@@ -26,10 +26,11 @@ class CWebSocketProtocol
 public:
 	CWebSocketProtocol(void);
 	~CWebSocketProtocol(void);
-
+	
 	static int Handshake(char *pBuffer, unsigned int uLen, std::string *strOut);
+	//解析pBuffer. outLen为内容长度  wsPackageLength为整个包长度  return为指向内容的指针
 	static char* DecodeFrame(char* pBuffer, unsigned int uLen, int &outLen, int &wsPackageLength);
-	//pBuffer之前空10个字节
+	//会在pBuffer前面加ws头
 	static char* EncodeFrame(char* pBuffer, unsigned int uLen, int &outLen);
 
 private:
