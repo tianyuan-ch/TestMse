@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="源文件\Network">
       <UniqueIdentifier>{c98e496b-7f8b-4a61-b088-bc64628cb367}</UniqueIdentifier>
     </Filter>
@@ -26,6 +22,16 @@
     </Filter>
     <Filter Include="源文件\utility">
       <UniqueIdentifier>{a99a6e5f-d099-4850-b184-9189a397281f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\FMp4">
+      <UniqueIdentifier>{b6105320-54e2-4113-afe7-9248a39e81fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\FMp4\Impl">
+      <UniqueIdentifier>{b7534ce8-8267-41b4-a78c-5159f91130f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +86,15 @@
     <ClCompile Include="utility\Base64.cpp">
       <Filter>源文件\utility</Filter>
     </ClCompile>
+    <ClCompile Include="FMp4\H264AacPackToFmp4FfmpegImpl.cpp">
+      <Filter>源文件\FMp4\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\FFmpegBinariesHelper.cpp">
+      <Filter>源文件\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\H264Utils.cpp">
+      <Filter>源文件\utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Network\EPOLL\EPollModel.h">
@@ -131,6 +146,24 @@
       <Filter>源文件\utility</Filter>
     </ClInclude>
     <ClInclude Include="utility\Base64.h">
+      <Filter>源文件\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="FMp4\H264AacPackToFmp4FfmpegImpl.h">
+      <Filter>源文件\FMp4\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="FMp4\IH264AacPackToFmp4.h">
+      <Filter>源文件\FMp4</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\FFmpegBinariesHelper.h">
+      <Filter>源文件\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\FfmpegHeader.h">
+      <Filter>源文件\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\H264Utils.h">
+      <Filter>源文件\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="utility\TypeDefine.h">
       <Filter>源文件\utility</Filter>
     </ClInclude>
   </ItemGroup>

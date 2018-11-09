@@ -30,7 +30,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -91,11 +91,16 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;D:\Work\Project\Git\TestMse\ffmpeg\Windows\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>.\lib;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;avdevice.lib;avfilter.lib;postproc.lib;swresample.lib;swscale.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>
+      </DelayLoadDLLs>
+      <SupportUnloadOfDelayLoadedDLL>false</SupportUnloadOfDelayLoadedDLL>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -159,6 +164,7 @@
     <ClCompile Include="cm\cm_thread_critical_region.cpp" />
     <ClCompile Include="cm\cm_time.cpp" />
     <ClCompile Include="cm\cm_win32thread.cpp" />
+    <ClCompile Include="FMp4\H264AacPackToFmp4FfmpegImpl.cpp" />
     <ClCompile Include="MseServer.cpp" />
     <ClCompile Include="Network\EPOLL\EPollModel.cpp" />
     <ClCompile Include="Network\EPOLL\EPollPerSocketContext.cpp" />
@@ -167,6 +173,8 @@
     <ClCompile Include="Network\ServerModelInterface.cpp" />
     <ClCompile Include="TestMseServer.cpp" />
     <ClCompile Include="utility\Base64.cpp" />
+    <ClCompile Include="utility\FFmpegBinariesHelper.cpp" />
+    <ClCompile Include="utility\H264Utils.cpp" />
     <ClCompile Include="utility\SHA1.cpp" />
     <ClCompile Include="WebSocket\WebSocketProtocol.cpp" />
   </ItemGroup>
@@ -179,6 +187,8 @@
     <ClInclude Include="cm\cm_time.h" />
     <ClInclude Include="cm\cm_type.h" />
     <ClInclude Include="cm\cm_win32thread.h" />
+    <ClInclude Include="FMp4\H264AacPackToFmp4FfmpegImpl.h" />
+    <ClInclude Include="FMp4\IH264AacPackToFmp4.h" />
     <ClInclude Include="MseServer.h" />
     <ClInclude Include="Network\EPOLL\EPollModel.h" />
     <ClInclude Include="Network\EPOLL\EPollPerSocketContext.h" />
@@ -186,7 +196,11 @@
     <ClInclude Include="Network\IOCP\PerSocketContext.h" />
     <ClInclude Include="Network\ServerModelInterface.h" />
     <ClInclude Include="utility\Base64.h" />
+    <ClInclude Include="utility\FFmpegBinariesHelper.h" />
+    <ClInclude Include="utility\FfmpegHeader.h" />
+    <ClInclude Include="utility\H264Utils.h" />
     <ClInclude Include="utility\SHA1.h" />
+    <ClInclude Include="utility\TypeDefine.h" />
     <ClInclude Include="WebSocket\WebSocketProtocol.h" />
   </ItemGroup>
   <ItemGroup>
