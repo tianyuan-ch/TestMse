@@ -41,7 +41,7 @@ H264AacPackToFmp4FfmpegImpl::~H264AacPackToFmp4FfmpegImpl()
 	Deinit();
 }
 
-int H264AacPackToFmp4FfmpegImpl::Init(Fmp4Data call_back, int arg)
+int H264AacPackToFmp4FfmpegImpl::Init(Fmp4Data call_back, long arg)
 {
 	if (m_format_context != NULL)
 		Deinit();
@@ -149,14 +149,10 @@ int H264AacPackToFmp4FfmpegImpl::InputH264(AVPacket* packet)
 					return -1;
 			}
 
-			if (is_key)
+			//if (is_key)
 			{
 				packet_decode->flags = AV_PKT_FLAG_KEY;
 			}
-			//packet_decode->data = slice;
-			//packet_decode->size = len;
-			//packet_decode->flags = AV_PKT_FLAG_KEY;
-
 
 			packet_decode->pts = (packet->pts - m_first_timestamp) * 90;
 			if (m_prev_video_pts != -1)
@@ -262,14 +258,14 @@ int H264AacPackToFmp4FfmpegImpl::InitFMp4(AVPacket* packet, int width, int heigh
 			return -1;
 		}
 
-		avio_ctx_buffer = (uint8_t*)av_malloc(avio_ctx_buffer_size);
+		avio_ctx_buffer = (uint8_t*)av_malloc(avio_ctx_buffer_size + 10);
 		if (avio_ctx_buffer == NULL)
 		{
 			printf("H264AacPackToFmp4FfmpegImpl::InitFMp4 av_malloc faield\n");
 			return -1;
 		}
 
-		avio_ctx = avio_alloc_context(avio_ctx_buffer, avio_ctx_buffer_size,
+		avio_ctx = avio_alloc_context(avio_ctx_buffer + 10, avio_ctx_buffer_size,
 			1, this, &AVIOReadPacket, &AVIOWritePacket, &AVIOSeek);
 		if (avio_ctx == NULL)
 		{

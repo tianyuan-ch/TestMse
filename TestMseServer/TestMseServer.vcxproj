@@ -87,7 +87,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -165,6 +165,7 @@
     <ClCompile Include="cm\cm_time.cpp" />
     <ClCompile Include="cm\cm_win32thread.cpp" />
     <ClCompile Include="FMp4\H264AacPackToFmp4FfmpegImpl.cpp" />
+    <ClCompile Include="FMp4\H264AacPackToFmp4Man.cpp" />
     <ClCompile Include="MseServer.cpp" />
     <ClCompile Include="Network\EPOLL\EPollModel.cpp" />
     <ClCompile Include="Network\EPOLL\EPollPerSocketContext.cpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="cm\cm_type.h" />
     <ClInclude Include="cm\cm_win32thread.h" />
     <ClInclude Include="FMp4\H264AacPackToFmp4FfmpegImpl.h" />
+    <ClInclude Include="FMp4\H264AacPackToFmp4Man.h" />
     <ClInclude Include="FMp4\IH264AacPackToFmp4.h" />
     <ClInclude Include="MseServer.h" />
     <ClInclude Include="Network\EPOLL\EPollModel.h" />

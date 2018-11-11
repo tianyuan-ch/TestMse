@@ -1,8 +1,6 @@
 #pragma once
 
-#include "JX.h"
 #include "IH264AacPackToFmp4.h"
-#include "AudioTranscoderMan.h"
 
 class H264AacPackToFmp4Man
 {
@@ -10,9 +8,7 @@ public:
 	H264AacPackToFmp4Man();
 	~H264AacPackToFmp4Man();
 
-	int Init( int in_samples_rate, AVSampleFormat sample_format, int channels, Fmp4Data call_back, int arg, int delay_sec_fill_audio);
-
-	int SetAudioCodecType(JTRTAVCodeType codec_type);
+	int Init(Fmp4Data call_back, long arg);
 
 	int InputAudio(uint8_t *data, int data_size, int64_t timestamp);
 
@@ -22,9 +18,15 @@ public:
 
 private://补音频相关
 	void FillAudioInit();
-	bool AudioUpdate(int64_t timestamp);
-	void VideoUpdate(int64_t timestamp);
+	bool UpdateAudioTimestamp(int64_t timestamp);
+	void UpdateVideoTimestamp(int64_t timestamp);
 	
+	bool m_timestamp_unite_prepare;
+	int64_t m_timestamp_video_last;
+	int64_t m_timestamp_video_last_use;
+	int64_t m_timestamp_audio_differ;
+	int64_t m_timestamp_video_differ;
+
 	bool m_fillao_first;
 	int64_t m_fillao_last_audio_pts;
 	int64_t m_fillao_last_video_pts;
@@ -35,23 +37,6 @@ private://补音频相关
 	int m_delay_ms_fill_audio;
 private:
 	IH264AacPackToFmp4 *m_to_fmp4;
-	AudioTranscoderMan *m_audio_transcoder;
-
-	JTRTAVCodeType m_audio_codec_type;
-	int m_samples_rate;
-	AVSampleFormat m_sample_format;
-	int m_channels;
-
-	long long m_prev_timestamp;
-
-public:
-	byte* JT1078PackData(JTRTHead head, byte* data, int &len);
-
-private:
-	JTRTPackData m_jt1078_packdata;
-
-public:
-	JTRTHead m_jt1078_head;
 
 };
 

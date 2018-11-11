@@ -203,14 +203,14 @@ char* CWebSocketProtocol::EncodeFrame(char* pBuffer, unsigned int uLen, int &out
 		pOutBuffer[1] = 127; //64 bit length
 
 		char *tmp = (char*)&uLen;
-		pOutBuffer[2] = tmp[3];
-		pOutBuffer[3] = tmp[2];
-		pOutBuffer[4] = tmp[1];
-		pOutBuffer[5] = tmp[0];
-		pOutBuffer[6] = 0;
-		pOutBuffer[7] = 0;
-		pOutBuffer[8] = 0;
-		pOutBuffer[9] = 0;
+		pOutBuffer[2] = 0;
+		pOutBuffer[3] = 0;
+		pOutBuffer[4] = 0;
+		pOutBuffer[5] = 0;
+		pOutBuffer[6] = tmp[3];
+		pOutBuffer[7] = tmp[2];
+		pOutBuffer[8] = tmp[1];
+		pOutBuffer[9] = tmp[0];
 	}
 
 	pOutBuffer[0] = (0x80 | WSOPCODE::WS_OPCODE_BINARY);

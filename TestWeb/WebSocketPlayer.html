@@ -7,12 +7,147 @@
 <body>
     <h1>播放测试</h1>
     <button onclick="Connect()">开始测试WebSocket</button>
+    </div>
+    <div id="player" style="width:1200px;height:982px;">
+    </div>
     <script>
         var socket;
+
+        window.onload = function () {
+            Init();
+        }
+
+        function Init() {
+            this.video = document.createElement('video');
+            this.video.width = 704;
+            this.video.height = 576;
+            this.video.style.background = "gray";
+            this.video.style.border = "2px solid white";
+            this.video.style.cssFloat = "left";
+            document.querySelector("#player").append(this.video);
+
+            
+            this.mediaSource = null;
+            this.sb = null;
+
+            this.segments = [];
+
+            this.onsbue = this.onSBUpdateEnd.bind(this);
+
+            this.InitMedia();
+        }
+
+        function InitMedia() {
+            if (this.sb) {
+                this.mediaSource.removeSourceBuffer(this.sourceBuffer);
+                this.sb = null;
+            }
+
+            let media = this.video;
+
+            media.src = null;
+            this.mediaSource = new MediaSource();
+            this.onmso = this.onMediaSourceOpen.bind(this);
+            this.onmse = this.onMediaSourceEnded.bind(this);
+            this.onmsc = this.onMediaSourceClose.bind(this);
+            mediaSource.addEventListener('sourceopen', this.onmso);
+            mediaSource.addEventListener('sourceended', this.onmse);
+            mediaSource.addEventListener('sourceclose', this.onmsc);
+
+            media.src = URL.createObjectURL(this.mediaSource);
+        }
+
+        function createSourceBuffers(tracks) {
+            var mediaSource = this.mediaSource;
+            let mimeType;
+            if (tracks.mimeType === '') {
+                mimeType = 'video/mp4;codecs=avc1.42c01e,mp4a.40.2'; //,mp4a.40.2 avc1.42c01f avc1.42801e avc1.640028 avc1.420028
+            } else {
+                mimeType = 'video/mp4;codecs=' + tracks.mimeType;
+            }
+
+            try {
+                this.sb = mediaSource.addSourceBuffer(mimeType);
+                this.sb.addEventListener('updateend', this.onsbue);
+                //track.buffer = sb;
+            } catch (err) {
+                console.log('addSourceBuffer err');
+            }
+            this.video.play();
+        }
+
+        function AppendBuffer(data){
+            if (!this.segments) {
+                this.segments = [data];
+            } else {
+                this.segments.push(data);
+            }
+            this.doAppending();
+        }
+
+        function doAppending() {
+
+            var segments = this.segments;
+
+            if (this.video.error) {
+                this.segments = [];
+                console.log('trying to append although a video error occured, flush segment and abort');
+                return;
+            }
+            if (this.appending) {
+                return;
+            }
+
+            if (segments && segments.length) {
+                var segment = segments.shift();
+                try {
+                    if (this.sb) {
+                        this.parent = segment.parent;
+                        this.sb.appendBuffer(segment.data);
+                        this.appendError = 0;
+                        this.appending = true;
+                    } else {
+
+                    }
+                } catch (err) {
+                    console.log('appendBuffer err');
+                }
+
+            }
+
+        }
+
+
+        function onSBUpdateEnd(event) {
+            this.appending = false;
+            this.doAppending();
+        }
+
+        function onMediaSourceClose() {
+            console.log('media source closed');
+        }
+
+        function onMediaSourceEnded() {
+            console.log('media source ended');
+        }
+
+        function onMediaSourceOpen() {
+            let mediaSource = this.mediaSource;
+            if (mediaSource) {
+                // once received, don't listen anymore to sourceopen event
+                mediaSource.removeEventListener('sourceopen', this.onmso);
+            }
+
+        }
+
+
         function Connect() {
+            createSourceBuffers({ mimeType: '' });
+
             socket = new WebSocket('ws://127.0.0.1:18004');
             socket.binaryType = 'arraybuffer';
             socket.onopen = function () {
+                
                 console.log("已连接");
                 var tmp = new Uint8Array(4)
                 tmp[0] = 0;
@@ -23,7 +158,7 @@
             }
             socket.onmessage = function (msg) {
                 var ptr = new Uint8Array(msg.data);
-                console.log("接收数据:" + ptr[0] + ptr[1] + ptr[2] + ptr[3]);
+                AppendBuffer({ data : ptr });
             };
             socket.onclose = function (msg) {
                 console.log("连接关闭 " + msg.code);
@@ -33,5 +168,5 @@
             };
         }
     </script>
-</body >
+</body>
 </html >

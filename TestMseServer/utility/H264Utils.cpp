@@ -97,10 +97,13 @@ unsigned char* H264Utils::H264GenerateExtradataFromIFrame(unsigned char* stream_
 	unsigned char *sps = NULL;
 	unsigned char *pps = NULL;
 
+
+
 	for (int i = 0; i < max + sei_size; i++)
 	{
 		if (stream_h264[i + 0] == 0x00 && stream_h264[i + 1] == 0x00 && stream_h264[i + 2] == 0x01)
 		{
+
 			int nal_unit_type = stream_h264[i + 3] & 31;
 
 			//sei 可能很长
@@ -151,6 +154,8 @@ unsigned char* H264Utils::H264GenerateExtradataFromIFrame(unsigned char* stream_
 				return extradata;
 			}
 		}
+
+
 	}
 
 	return NULL;

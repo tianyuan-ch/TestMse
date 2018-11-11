@@ -9,7 +9,7 @@ public:
 	H264AacPackToFmp4FfmpegImpl();
 	~H264AacPackToFmp4FfmpegImpl();
 
-	virtual int Init(Fmp4Data call_back, int arg);
+	virtual int Init(Fmp4Data call_back, long arg);
 	virtual int InputAAC(AVPacket* packet);
 	virtual int InputH264(AVPacket* packet);
 	virtual int Deinit();
