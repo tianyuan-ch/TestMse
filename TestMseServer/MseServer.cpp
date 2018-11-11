@@ -184,7 +184,7 @@ void MseServer::ThreadReader()
 
 	AVBitStreamFilterContext* mp4ToAnnexb = av_bitstream_filter_init("h264_mp4toannexb");
 
-	int beginTime = cm::cm_gettickcount();
+	int beginTime;
 	int64_t beginPTS = -1;
 
 	AVPacket avPacket;
@@ -195,6 +195,7 @@ void MseServer::ThreadReader()
 		ret = av_read_frame(pFormatContext, &avPacket);
 		if (ret == AVERROR_EOF)
 		{
+			beginPTS = -1;
 			av_seek_frame(pFormatContext, 0, 0, AVSEEK_FLAG_ANY);
 			continue;
 		}
@@ -215,6 +216,7 @@ void MseServer::ThreadReader()
 				pWebSocketItem->m_fmp4Muxer->InputAudio(avPacket.data, avPacket.size, pts);
 
 			}
+
 		}
 		else if (avPacket.stream_index == vStream->index)
 		{
@@ -223,7 +225,7 @@ void MseServer::ThreadReader()
 			if (beginPTS == -1)
 			{
 				beginPTS = pts;
-				beginTime == cm::cm_gettickcount();
+				beginTime = cm::cm_gettickcount();
 			}
 			else
 			{
@@ -233,21 +235,24 @@ void MseServer::ThreadReader()
 					cm::cm_sleep(nSleep);
 				}
 			}
+			
+			uint8_t *pData;
+			int nSize;
 
-
-			ret = av_bitstream_filter_filter(mp4ToAnnexb, vStream->codec, NULL, &avPacket.data, &avPacket.size, avPacket.data, avPacket.size, avPacket.flags & AV_PKT_FLAG_KEY);
+			ret = av_bitstream_filter_filter(mp4ToAnnexb, vStream->codec, NULL, &pData, &nSize, avPacket.data, avPacket.size, avPacket.flags & AV_PKT_FLAG_KEY);
 
 			std::map <long, CWebSocketItem*>::iterator iter;
 			for (iter = m_mapWebItem.begin(); iter != m_mapWebItem.end(); ++iter)
 			{
 				CWebSocketItem* pWebSocketItem = iter->second;
-				pWebSocketItem->m_fmp4Muxer->InputH264(avPacket.data, avPacket.size, pts);
+				pWebSocketItem->m_fmp4Muxer->InputH264(pData, nSize, pts);
 
 			}
 			
+			av_free(pData);
 		}
 
-
+		av_packet_unref(&avPacket);
 	}
 
 }
